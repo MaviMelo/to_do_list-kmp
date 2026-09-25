@@ -17,7 +17,7 @@ sealed interface Screen {
 }
 
 @Composable
-fun TodoApp() {
+fun TodoApp(onExitApp: () -> Unit = {}) {
     var currentScreen by remember { mutableStateOf<Screen>(Screen.TaskList) }
 
     Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background) {
@@ -25,6 +25,7 @@ fun TodoApp() {
             is Screen.TaskList -> TaskListScreen(
                 onEditTask = { currentScreen = Screen.TaskEditor(it) },
                 onManageCategories = { currentScreen = Screen.Categories },
+                onExitApp = onExitApp,
             )
             is Screen.TaskEditor -> TaskEditorScreen(
                 taskId = screen.taskId,

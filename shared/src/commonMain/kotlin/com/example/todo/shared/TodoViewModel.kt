@@ -41,11 +41,21 @@ class TodoViewModel(private val repository: TodoRepository) {
     val categories: StateFlow<List<Category>> = repository.categories()
         .stateIn(scope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    // Gatilho de refresh: incrementado após cada escrita para re-emitir a lista
+    // mesmo que a invalidação automática de queries do driver não dispare.
+    private val _refresh = MutableStateFlow(0)
+
+    // Sincroniza com escritas feitas fora desta instância (editor de tarefas,
+    // tela de categorias), que usam TodoViewModel.refreshNow().
+    private val _external: MutableStateFlow<Int> = TodoViewModel.Companion._globalRefresh
+
     val tasks: StateFlow<List<TaskWithCategory>> = combine(
+        _refresh,
+        _external,
         repository.tasks(),
         repository.categories(),
         _filter,
-    ) { tasks, cats, filter ->
+    ) { _, _, tasks, cats, filter ->
         val byId = cats.associateBy { it.id }
         tasks
             .map { TaskWithCategory(it, it.categoryId?.let { c -> byId[c] }) }
@@ -66,16 +76,20 @@ class TodoViewModel(private val repository: TodoRepository) {
 
     fun toggleCompleted(task: TodoTask) {
         scope.launch {
-            repository.setCompleted(task.id, !task.completed)
+            val newCompleted = !task.completed
+            repository.setCompleted(task.id, newCompleted)
+            _refresh.value++
             val dep = TodoViewModel.dependencies
-            if (!task.completed) {
+            if (newCompleted) {
+                // Tarefa concluída: cancela o lembrete pendente.
+                dep?.notifier?.cancel(task.id)
+            } else {
+                // Reaberta: reagenda o lembrete se ainda não venceu.
                 task.dueDateTime?.let { due ->
                     if (due > currentTimeMillis()) {
                         dep?.notifier?.schedule(task.id, task.title, task.description, due)
                     }
                 }
-            } else {
-                dep?.notifier?.cancel(task.id)
             }
         }
     }
@@ -84,11 +98,19 @@ class TodoViewModel(private val repository: TodoRepository) {
         scope.launch {
             TodoViewModel.dependencies?.notifier?.cancel(id)
             repository.deleteTask(id)
+            _refresh.value++
         }
     }
 
     companion object {
         // Definido pelo entry point de cada plataforma após createDependencies().
         var dependencies: AppDependencies? = null
+
+        private val _globalRefresh = MutableStateFlow(0)
+
+        /** Re-emite a lista de tarefas/categorias após escritas fora desta instância. */
+        fun refreshNow() {
+            _globalRefresh.value++
+        }
     }
 }

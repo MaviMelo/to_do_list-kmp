@@ -153,6 +153,32 @@ public class TodoQueries(
     }
   }
 
+  public fun insertTaskWithId(
+    id: Long?,
+    title: String,
+    description: String,
+    completed: Long,
+    dueDateTime: Long?,
+    createdAt: Long,
+    categoryId: Long?,
+  ) {
+    driver.execute(-874_310_851, """
+        |INSERT INTO Task (id, title, description, completed, dueDateTime, createdAt, categoryId)
+        |VALUES (?, ?, ?, ?, ?, ?, ?)
+        """.trimMargin(), 7) {
+          bindLong(0, id)
+          bindString(1, title)
+          bindString(2, description)
+          bindLong(3, completed)
+          bindLong(4, dueDateTime)
+          bindLong(5, createdAt)
+          bindLong(6, categoryId)
+        }
+    notifyQueries(-874_310_851) { emit ->
+      emit("Task")
+    }
+  }
+
   public fun updateTask(
     title: String,
     description: String,

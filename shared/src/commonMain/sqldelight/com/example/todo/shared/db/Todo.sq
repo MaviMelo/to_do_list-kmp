@@ -33,6 +33,10 @@ insertTask:
 INSERT INTO Task (title, description, completed, dueDateTime, createdAt, categoryId)
 VALUES (:title, :description, :completed, :dueDateTime, :createdAt, :categoryId);
 
+insertTaskWithId:
+INSERT INTO Task (id, title, description, completed, dueDateTime, createdAt, categoryId)
+VALUES (:id, :title, :description, :completed, :dueDateTime, :createdAt, :categoryId);
+
 updateTask:
 UPDATE Task SET title = :title, description = :description, completed = :completed,
     dueDateTime = :dueDateTime, categoryId = :categoryId WHERE id = :id;

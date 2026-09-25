@@ -1,11 +1,12 @@
 -- Merging decision tree log ---
 manifest
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-27:12
-INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-27:12
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-28:12
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:2:1-28:12
 MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/adm1/.gradle/caches/transforms-4/93d74c20480dee7fdd5ad39f34428cdc/transformed/appcompat-resources-1.7.0/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.appcompat:appcompat:1.7.0] /home/adm1/.gradle/caches/transforms-4/9f1c2a5943c95ee62ec1e67a81ecbb9e/transformed/appcompat-1.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adm1/.gradle/caches/transforms-4/2468e37c4d054bcec4a804d31233d974/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/adm1/.gradle/caches/transforms-4/6ad767d795a18633f743964c9095a23f/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:2:1-7:12
 MERGED from [org.jetbrains.compose.components:components-resources-android:1.6.11] /home/adm1/.gradle/caches/transforms-4/7c32f289ea043b16fec68bc9972a7cec/transformed/library-release/AndroidManifest.xml:2:1-7:12
@@ -49,7 +50,6 @@ MERGED from [androidx.autofill:autofill:1.0.0] /home/adm1/.gradle/caches/transfo
 MERGED from [androidx.core:core:1.13.1] /home/adm1/.gradle/caches/transforms-4/726201f6e9406bd11d7b7fa72eb77315/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/adm1/.gradle/caches/transforms-4/71050e6f8de381d46c7df6963a0db1bc/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:17:1-23:12
 MERGED from [androidx.core:core-ktx:1.13.1] /home/adm1/.gradle/caches/transforms-4/31eb49c73eaf00c78d131314db6ead18/transformed/core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
-MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:2:1-7:12
 MERGED from [app.cash.sqldelight:android-driver:2.0.2] /home/adm1/.gradle/caches/transforms-4/448c76b343fb1f4604419ab28cf3145b/transformed/android-driver-2.0.2-debug/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.7] /home/adm1/.gradle/caches/transforms-4/d99aa524de2ae588e12f5779a22e9701/transformed/runtime-saveable-release/AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.compose.runtime:runtime-android:1.6.7] /home/adm1/.gradle/caches/transforms-4/83ec76d10c9f5e6cfb6baa3b342c1871/transformed/runtime-release/AndroidManifest.xml:2:1-7:12
@@ -84,8 +84,8 @@ ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/a
 	android:name
 		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:6:22-78
 application
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:8:5-26:19
-INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:8:5-26:19
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:8:5-27:19
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:8:5-27:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /home/adm1/.gradle/caches/transforms-4/25dca61b69142939fc97725ac5d6eacb/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.lifecycle:lifecycle-process:2.8.6] /home/adm1/.gradle/caches/transforms-4/25dca61b69142939fc97725ac5d6eacb/transformed/lifecycle-process-2.8.6/AndroidManifest.xml:23:5-33:19
 MERGED from [androidx.emoji2:emoji2:1.3.0] /home/adm1/.gradle/caches/transforms-4/bb5e41b3943cfb3f6aaa993f8982e051/transformed/emoji2-1.3.0/AndroidManifest.xml:23:5-33:19
@@ -103,35 +103,37 @@ MERGED from [androidx.startup:startup-runtime:1.1.1] /home/adm1/.gradle/caches/t
 	android:appComponentFactory
 		ADDED from [androidx.core:core:1.13.1] /home/adm1/.gradle/caches/transforms-4/726201f6e9406bd11d7b7fa72eb77315/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
 	android:supportsRtl
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:11:9-35
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:12:9-35
 	android:label
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:10:9-41
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:11:9-41
 	android:allowBackup
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:9:9-35
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:10:9-35
 	android:theme
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:12:9-45
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:13:9-45
+	android:name
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:9:9-61
 activity#com.example.todo.app.MainActivity
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:14:9-21:20
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:15:9-22:20
 	android:exported
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:16:13-36
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:17:13-36
 	android:name
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:15:13-41
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:16:13-41
 intent-filter#action:name:android.intent.action.MAIN+category:name:android.intent.category.LAUNCHER
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:17:13-20:29
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:18:13-21:29
 action#android.intent.action.MAIN
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:18:17-69
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:19:17-69
 	android:name
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:18:25-66
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:19:25-66
 category#android.intent.category.LAUNCHER
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:19:17-77
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:20:17-77
 	android:name
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:19:27-74
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:20:27-74
 receiver#com.example.todo.shared.TodoAlarmReceiver
-ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:23:9-25:40
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:24:9-26:40
 	android:exported
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:25:13-37
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:26:13-37
 	android:name
-		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:24:13-69
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml:25:13-69
 uses-sdk
 INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/src/androidMain/AndroidManifest.xml
@@ -140,6 +142,8 @@ MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/adm1/.gradle/ca
 MERGED from [androidx.appcompat:appcompat-resources:1.7.0] /home/adm1/.gradle/caches/transforms-4/93d74c20480dee7fdd5ad39f34428cdc/transformed/appcompat-resources-1.7.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.appcompat:appcompat:1.7.0] /home/adm1/.gradle/caches/transforms-4/9f1c2a5943c95ee62ec1e67a81ecbb9e/transformed/appcompat-1.7.0/AndroidManifest.xml:5:5-44
 MERGED from [androidx.appcompat:appcompat:1.7.0] /home/adm1/.gradle/caches/transforms-4/9f1c2a5943c95ee62ec1e67a81ecbb9e/transformed/appcompat-1.7.0/AndroidManifest.xml:5:5-44
+MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
+MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adm1/.gradle/caches/transforms-4/2468e37c4d054bcec4a804d31233d974/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /home/adm1/.gradle/caches/transforms-4/2468e37c4d054bcec4a804d31233d974/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] /home/adm1/.gradle/caches/transforms-4/6ad767d795a18633f743964c9095a23f/transformed/emoji2-views-helper-1.3.0/AndroidManifest.xml:5:5-44
@@ -226,8 +230,6 @@ MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/adm1/.
 MERGED from [androidx.customview:customview-poolingcontainer:1.0.0] /home/adm1/.gradle/caches/transforms-4/71050e6f8de381d46c7df6963a0db1bc/transformed/customview-poolingcontainer-1.0.0/AndroidManifest.xml:20:5-21:38
 MERGED from [androidx.core:core-ktx:1.13.1] /home/adm1/.gradle/caches/transforms-4/31eb49c73eaf00c78d131314db6ead18/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
 MERGED from [androidx.core:core-ktx:1.13.1] /home/adm1/.gradle/caches/transforms-4/31eb49c73eaf00c78d131314db6ead18/transformed/core-ktx-1.13.1/AndroidManifest.xml:5:5-44
-MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
-MERGED from [:shared] /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/merged_manifest/debug/processDebugManifest/AndroidManifest.xml:5:5-44
 MERGED from [app.cash.sqldelight:android-driver:2.0.2] /home/adm1/.gradle/caches/transforms-4/448c76b343fb1f4604419ab28cf3145b/transformed/android-driver-2.0.2-debug/AndroidManifest.xml:5:5-44
 MERGED from [app.cash.sqldelight:android-driver:2.0.2] /home/adm1/.gradle/caches/transforms-4/448c76b343fb1f4604419ab28cf3145b/transformed/android-driver-2.0.2-debug/AndroidManifest.xml:5:5-44
 MERGED from [androidx.compose.runtime:runtime-saveable-android:1.6.7] /home/adm1/.gradle/caches/transforms-4/d99aa524de2ae588e12f5779a22e9701/transformed/runtime-saveable-release/AndroidManifest.xml:5:5-44

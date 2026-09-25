@@ -36,6 +36,7 @@ class CategoriesViewModel(private val repository: TodoRepository) {
         scope.launch {
             repository.insertCategory(name.trim(), "#607D8B")
             load()
+            TodoViewModel.refreshNow()
         }
         return true
     }
@@ -47,6 +48,7 @@ class CategoriesViewModel(private val repository: TodoRepository) {
             if (cat != null) {
                 repository.updateCategory(id, newName.trim(), cat.color)
                 load()
+                TodoViewModel.refreshNow()
             }
         }
         return true
@@ -56,6 +58,7 @@ class CategoriesViewModel(private val repository: TodoRepository) {
         scope.launch {
             repository.deleteCategory(id)
             load()
+            TodoViewModel.refreshNow()
         }
     }
 }

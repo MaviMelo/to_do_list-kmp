@@ -1,6 +1,7 @@
 package com.example.todo.app.ui
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,7 +17,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -35,7 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.example.todo.shared.TaskEditorViewModel
 import com.example.todo.shared.currentTimeMillis
 import kotlinx.datetime.Instant
+import kotlinx.datetime.LocalDateTime
 import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toInstant
 import kotlinx.datetime.toLocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -162,56 +168,107 @@ fun TaskEditorScreen(
 private fun DuePicker(epochMillis: Long, onChange: (Long) -> Unit) {
     val local = Instant.fromEpochMilliseconds(epochMillis)
         .toLocalDateTime(TimeZone.currentSystemDefault())
-    var day by remember(epochMillis / (24 * 3600 * 1000L)) { mutableStateOf(local.dayOfMonth) }
-    var hour by remember(epochMillis / (24 * 3600 * 1000L)) { mutableStateOf(local.hour) }
-    var minute by remember(epochMillis / (24 * 3600 * 1000L)) { mutableStateOf(local.minute) }
+    val key = epochMillis / (24 * 3600 * 1000L) // re-sincroniza só quando o dia muda
+    var year by remember(key) { mutableStateOf(local.year) }
+    var month by remember(key) { mutableStateOf(local.monthNumber) }
+    var day by remember(key) { mutableStateOf(local.dayOfMonth) }
+    var hour by remember(key) { mutableStateOf(local.hour) }
+    var minute by remember(key) { mutableStateOf(local.minute) }
 
-    // Simples stepper de data/hora: mantém o mês atual, ajusta dia/hora/minuto.
+    val monthNames = listOf(
+        "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+        "Jul", "Ago", "Set", "Out", "Nov", "Dez",
+    )
+
     // Compose Multiplatform 1.6 não tem DatePicker/TimePicker multiplataforma nativos.
     Column {
         Text(
-            "Vence em: dia $day às %02d:%02d".format(hour, minute),
+            "Vence em: %02d/%02d/%04d às %02d:%02d".format(day, month, year, hour, minute),
             style = MaterialTheme.typography.bodyMedium,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            Stepper(label = "Dia", value = day, range = 1..31, onChange = { day = it })
+            Stepper(label = "Dia", value = day, range = 1..daysInMonth(year, month), onChange = { day = it })
+            MonthDropdown(
+                monthNames = monthNames,
+                selected = month,
+                onSelect = { m ->
+                    month = m
+                    day = day.coerceIn(1, daysInMonth(year, m))
+                },
+            )
+            Stepper(
+                label = "Ano",
+                value = year,
+                range = local.year - 1..local.year + 5,
+                onChange = { year = it },
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             Stepper(label = "Hora", value = hour, range = 0..23, onChange = { hour = it })
             Stepper(label = "Min", value = minute, range = 0..59, onChange = { minute = it })
         }
     }
 
-    LaunchedEffect(day, hour, minute) {
-        val millis = toEpochMillis(day, hour, minute)
-        onChange(millis)
+    LaunchedEffect(year, month, day, hour, minute) {
+        onChange(toEpochMillis(year, month, day, hour, minute))
     }
 }
 
 @Composable
-private fun Stepper(label: String, value: Int, range: IntRange, onChange: (Int) -> Unit) {
+private fun Stepper(
+    label: String,
+    value: Int,
+    range: IntRange,
+    display: ((Int) -> String)? = null,
+    onChange: (Int) -> Unit,
+) {
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Text(label, style = MaterialTheme.typography.labelSmall)
         Row(verticalAlignment = Alignment.CenterVertically) {
             TextButton(onClick = { if (value > range.first) onChange(value - 1) }) { Text("-") }
-            Text("$value", style = MaterialTheme.typography.titleMedium)
+            Text(display?.invoke(value) ?: "$value", style = MaterialTheme.typography.titleMedium)
             TextButton(onClick = { if (value < range.last) onChange(value + 1) }) { Text("+") }
         }
     }
 }
 
-private fun toEpochMillis(day: Int, hour: Int, minute: Int): Long {
-    // Aproximação: usa o mês/ano atuais; ultrapassa o fim do mês rolado pelo Instant.
-    val now = Instant.fromEpochMilliseconds(currentTimeMillis())
-    val base = now.toLocalDateTime(TimeZone.currentSystemDefault())
-    val daysInMonth = when (base.monthNumber) {
-        1, 3, 5, 7, 8, 10, 12 -> 31
-        4, 6, 9, 11 -> 30
-        else -> if (base.year % 4 == 0 && (base.year % 100 != 0 || base.year % 400 == 0)) 29 else 28
+@Composable
+private fun MonthDropdown(
+    monthNames: List<String>,
+    selected: Int,
+    onSelect: (Int) -> Unit,
+) {
+    var expanded by remember { mutableStateOf(false) }
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        Text("Mês", style = MaterialTheme.typography.labelSmall)
+        Box {
+            OutlinedButton(onClick = { expanded = true }) {
+                Text(monthNames[selected - 1])
+            }
+            DropdownMenu(expanded = expanded, onDismissRequest = { expanded = false }) {
+                monthNames.forEachIndexed { index, name ->
+                    DropdownMenuItem(
+                        text = { Text(name) },
+                        onClick = {
+                            onSelect(index + 1)
+                            expanded = false
+                        },
+                    )
+                }
+            }
+        }
     }
-    val clampedDay = day.coerceIn(1, daysInMonth)
-    val epochDayOffset = clampedDay - base.dayOfMonth
-    val targetEpochMillis = currentTimeMillis() +
-        epochDayOffset * 24 * 3600 * 1000L +
-        (hour - base.hour) * 3600 * 1000L +
-        (minute - base.minute) * 60 * 1000L
-    return targetEpochMillis
+}
+
+private fun daysInMonth(year: Int, month: Int): Int = when (month) {
+    1, 3, 5, 7, 8, 10, 12 -> 31
+    4, 6, 9, 11 -> 30
+    else -> if (year % 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 29 else 28
+}
+
+private fun toEpochMillis(year: Int, month: Int, day: Int, hour: Int, minute: Int): Long {
+    val clampedDay = day.coerceIn(1, daysInMonth(year, month))
+    return LocalDateTime(year, month, clampedDay, hour, minute)
+        .toInstant(TimeZone.currentSystemDefault())
+        .toEpochMilliseconds()
 }

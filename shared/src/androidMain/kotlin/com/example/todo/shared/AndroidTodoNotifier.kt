@@ -59,9 +59,14 @@ class AndroidTodoNotifier(private val context: Context) : TodoNotifier {
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
-        // setExact pode ser bloqueado pelo sistema em modo Doze; useAndAllowWhileIdle
-        // é um compromisso razoável. Para exatidão máxima exigiria SCHEDULE_EXACT_ALARM.
-        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dueMillis, pendingIntent)
+        // Alarmes exatos (setExact*) exigem SCHEDULE_EXACT_ALARM concedida pelo usuário
+        // em API 31+; sem ela, o sistema lança SecurityException. Tentamos o exact e,
+        // se negado, caímos para o alarme inexact (janela de ~10 min) — nunca crashar.
+        try {
+            alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dueMillis, pendingIntent)
+        } catch (e: SecurityException) {
+            alarmManager.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, dueMillis, pendingIntent)
+        }
     }
 
     override fun cancel(taskId: Long) {

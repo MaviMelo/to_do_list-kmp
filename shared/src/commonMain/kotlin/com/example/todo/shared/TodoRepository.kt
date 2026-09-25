@@ -23,7 +23,9 @@ class TodoRepository(private val database: TodoDatabase) {
         dueDateTime: Long?,
         categoryId: Long?,
     ): Long {
-        database.todoQueries.insertTask(
+        val id = kotlin.random.Random.nextLong(1_000_000_000L, 9_999_999_999L)
+        database.todoQueries.insertTaskWithId(
+            id = id,
             title = title,
             description = description,
             completed = 0L,
@@ -31,7 +33,7 @@ class TodoRepository(private val database: TodoDatabase) {
             createdAt = currentTimeMillis(),
             categoryId = categoryId,
         )
-        return database.todoQueries.selectAllTasks().executeAsList().last().id
+        return id
     }
 
     fun updateTask(task: TodoTask) {
@@ -46,7 +48,8 @@ class TodoRepository(private val database: TodoDatabase) {
     }
 
     fun setCompleted(id: Long, completed: Boolean) {
-        database.todoQueries.setTaskCompleted(id, if (completed) 1L else 0L)
+        // Argumentos nomeados: a ordem gerada pelo SQLDelight é (completed, id).
+        database.todoQueries.setTaskCompleted(completed = if (completed) 1L else 0L, id = id)
     }
 
     fun deleteTask(id: Long) {

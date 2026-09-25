@@ -5,6 +5,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -54,12 +56,14 @@ import com.example.todo.shared.db.TodoTask
 fun TaskListScreen(
     onEditTask: (Long?) -> Unit,
     onManageCategories: () -> Unit,
+    onExitApp: () -> Unit = {},
 ) {
     val viewModel = remember { TodoViewModel(AppGraph.repository) }
     val tasks by viewModel.tasks.collectAsState()
     val categories by viewModel.categories.collectAsState()
     val filter by viewModel.filter.collectAsState()
     var taskToDelete by remember { mutableStateOf<TodoTask?>(null) }
+    var showExitDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) { }
 
@@ -70,6 +74,9 @@ fun TaskListScreen(
                 actions = {
                     TextButton(onClick = onManageCategories) {
                         Text("Categorias")
+                    }
+                    TextButton(onClick = { showExitDialog = true }) {
+                        Text("Sair")
                     }
                 },
             )
@@ -169,6 +176,23 @@ fun TaskListScreen(
             },
         )
     }
+
+    if (showExitDialog) {
+        AlertDialog(
+            onDismissRequest = { showExitDialog = false },
+            title = { Text("Sair do aplicativo") },
+            text = { Text("Deseja realmente sair? As alterações já foram salvas.") },
+            confirmButton = {
+                TextButton(onClick = {
+                    showExitDialog = false
+                    onExitApp()
+                }) { Text("Sair") }
+            },
+            dismissButton = {
+                TextButton(onClick = { showExitDialog = false }) { Text("Cancelar") }
+            },
+        )
+    }
 }
 
 @Composable
@@ -222,9 +246,10 @@ private fun TaskRow(
                     Text(
                         text = label,
                         style = MaterialTheme.typography.labelSmall,
-                        color = when {
-                            task.completed -> MaterialTheme.colorScheme.onSurfaceVariant
-                            else -> Color(0xFFD32F2F)
+                        color = when (dueUrgency(due, task.completed)) {
+                            DueUrgency.OVERDUE -> Color(0xFFD32F2F) // vermelho
+                            DueUrgency.SOON -> Color(0xFFEF6C00)    // laranja
+                            DueUrgency.NONE -> MaterialTheme.colorScheme.onSurfaceVariant
                         },
                     )
                 }

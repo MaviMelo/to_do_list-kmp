@@ -19,7 +19,15 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             MaterialTheme {
-                TodoApp()
+                TodoApp(
+                    onExitApp = {
+                        if (android.os.Build.VERSION.SDK_INT >= 21) {
+                            finishAndRemoveTask()
+                        } else {
+                            finish()
+                        }
+                    },
+                )
             }
         }
     }

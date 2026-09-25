@@ -85,7 +85,7 @@ class TaskEditorViewModel(private val repository: TodoRepository) {
             val dep = TodoViewModel.dependencies
             if (s.taskId == null) {
                 val newId = repository.insertTask(s.title.trim(), s.description.trim(), due, s.categoryId)
-                if (due != null && dep?.notifier?.isAvailable == true) {
+                if (due != null && due > currentTimeMillis() && dep?.notifier?.isAvailable == true) {
                     dep.notifier.schedule(newId, s.title, s.description, due)
                 }
             } else {
@@ -104,13 +104,14 @@ class TaskEditorViewModel(private val repository: TodoRepository) {
                 )
                 if (dep != null) {
                     // Reagendar ou cancelar conforme a mudança de vencimento.
-                    if (due != null && due > currentTimeMillis()) {
+                    if (due != null && due > currentTimeMillis() && dep.notifier.isAvailable) {
                         dep.notifier.schedule(id, s.title, s.description, due)
                     } else {
                         dep.notifier.cancel(id)
                     }
                 }
             }
+            TodoViewModel.refreshNow()
         }
         return true
     }
