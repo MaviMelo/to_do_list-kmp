@@ -1,0 +1,25 @@
+#Thu Sep 24 23:24:27 BRT 2026
+base.0=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeExtDexDebug/classes.dex
+base.1=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeLibDexDebug/12/classes.dex
+base.2=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeLibDexDebug/9/classes.dex
+base.3=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeProjectDexDebug/0/classes.dex
+base.4=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeProjectDexDebug/14/classes.dex
+base.5=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeProjectDexDebug/3/classes.dex
+base.6=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeProjectDexDebug/5/classes.dex
+base.7=/home/adm1/repositories_git/Desenvolvimento/todo-kmp/composeApp/build/intermediates/dex/debug/mergeExtDexDebug/classes2.dex
+path.0=classes.dex
+path.1=12/classes.dex
+path.2=9/classes.dex
+path.3=0/classes.dex
+path.4=14/classes.dex
+path.5=3/classes.dex
+path.6=5/classes.dex
+path.7=classes2.dex
+renamed.0=classes.dex
+renamed.1=classes2.dex
+renamed.2=classes3.dex
+renamed.3=classes4.dex
+renamed.4=classes5.dex
+renamed.5=classes6.dex
+renamed.6=classes7.dex
+renamed.7=classes8.dex

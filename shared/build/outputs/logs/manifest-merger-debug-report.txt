@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml:2:13-83
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml:2:13-83
+	package
+		INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml
+	xmlns:android
+		ADDED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml:2:23-81
+uses-sdk
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml reason: use-sdk injection requested
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml
+INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml
+	android:targetSdkVersion
+		INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml
+	android:minSdkVersion
+		INJECTED from /home/adm1/repositories_git/Desenvolvimento/todo-kmp/shared/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest476045968806314327.xml
