@@ -261,3 +261,72 @@ não `SCHEDULE_EXACT_ALARM`.
 **Resolvido.** Salvar tarefa com vencimento não fecha mais o app. Notificações com
 alarme inexact podem disparar com até ~10 min de atraso em modo Doze — limitação
 conhecida registrada no Resumo Final.
+
+---
+
+## Entrada 08 — 2026-09-25
+
+### Prompt / Request
+
+Usuário testou no emulador: "Ainda não funciona as caixas de marcação da lista de
+tarefas, não aparece opção de sair/fechar a aplicação e não tem opção de marcar o
+mês do agendamento na criação da tarefa."
+
+### Actions Performed
+
+- **Checkbox sem efeito:** adicionado gatilho de refresh determinístico no
+  `TodoViewModel` — `_refresh` local + `_globalRefresh` companheiro com
+  `TodoViewModel.refreshNow()` — combinados ao flow de `tasks`; incrementados após
+  `setCompleted`/`deleteTask` e após escritas do editor/categorias.
+- **Notificação invertida (bug descoberto):** `toggleCompleted` agendava ao concluir
+  e cancelava ao reabrir. Corrigido: concluir cancela o lembrete; reabrir reagenda
+  se o vencimento ainda não passou.
+- **ID errado ao inserir (bug descoberto):** `insertTask` retornava o id da linha
+  mais antiga da ordenação (edição/lembrete miravam a tarefa errada). Corrigido com
+  `Random.nextLong` + nova query `insertTaskWithId` no `Todo.sq`.
+- **Opção de sair:** botão "Sair" na TopAppBar da lista, com `AlertDialog` de
+  confirmação; Android chama `finishAndRemoveTask()` (API 21+), senão `finish()`.
+- **Seleção de mês:** stepper de mês substituído por `MonthDropdown`
+  (DropdownMenu com os 12 meses em pt-BR) no `DuePicker` do editor.
+
+### Result
+
+- `BUILD SUCCESSFUL in 20s`; APK reinstalado no `todo_emulator`; usuário testou e
+  aprovou ("ficou bom e comitei"). Correções commitadas pelo próprio usuário.
+
+### Problems / Errors
+
+- Pendente: chips de categoria estouram a tela quando há muitas e novas categorias
+  são criadas sempre com a mesma cor (`#607D8B` fixo) — ajuste na próxima sessão.
+
+
+---
+
+
+## Entrada 09 — 2026-09-25
+
+### Prompt / Request
+
+Usuário: "só será necessário um pequeno ajuste no campo de categorias pois não aparece
+corretamente outras categorias por não caber todas na tela e todas as novas criadas
+ficam com o marcador na mesma cor."
+
+### Actions Performed
+
+- **Overflow dos chips de categoria:** `Row` → `FlowRow`
+  (`androidx.compose.foundation.layout.FlowRow`) nos filtros de categoria do
+  `TaskListScreen` e na seleção de categoria do `TaskEditorScreen` — os chips agora
+  quebram linha em vez de estourar a largura da tela.
+- **Cor fixa em novas categorias:** `CategoriesViewModel.addCategory` usava
+  `#607D8B` hardcoded. Agora uma paleta de 10 cores Material distintas
+  (`CATEGORY_COLORS` no companion) é consultada e a primeira cor ainda não usada
+  pelas categorias existentes é escolhida; esgotada a paleta, retorna ao ciclo
+  (`size % palette.size`).
+
+### Result
+
+- Build OK (`:composeApp:assembleDebug` — BUILD SUCCESSFUL).
+- APK instalado no emulador `todo_emulator` e app executado.
+- Verificado por screenshot: chips de categoria quebram em 2 linhas na lista
+  (nenhum chip fora da tela) e tela de categorias exibe cores distintas
+  (rosa, laranja, roxo, blue grey, verde entre as existentes).

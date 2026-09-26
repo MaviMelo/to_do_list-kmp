@@ -34,7 +34,11 @@ class CategoriesViewModel(private val repository: TodoRepository) {
     fun addCategory(name: String): Boolean {
         if (name.isBlank()) return false
         scope.launch {
-            repository.insertCategory(name.trim(), "#607D8B")
+            // Primeira cor livre da paleta evita que todas as novas compartilhem a mesma cor.
+            val used = repository.categoriesNow().map { it.color }.toSet()
+            val color = CATEGORY_COLORS.firstOrNull { it !in used }
+                ?: CATEGORY_COLORS[repository.categoriesNow().size % CATEGORY_COLORS.size]
+            repository.insertCategory(name.trim(), color)
             load()
             TodoViewModel.refreshNow()
         }
@@ -60,5 +64,21 @@ class CategoriesViewModel(private val repository: TodoRepository) {
             load()
             TodoViewModel.refreshNow()
         }
+    }
+
+    private companion object {
+        // Cores Material distintas; primeira não usada é escolhida ao criar categoria.
+        val CATEGORY_COLORS = listOf(
+            "#F44336", // vermelho
+            "#E91E63", // rosa
+            "#9C27B0", // roxo
+            "#3F51B5", // índigo
+            "#2196F3", // azul
+            "#009688", // teal
+            "#4CAF50", // verde
+            "#FF9800", // laranja
+            "#795548", // marrom
+            "#607D8B", // blue grey
+        )
     }
 }

@@ -39,9 +39,10 @@ Organização: camada de dados (SQLDelight) → repositório → ViewModels → 
 
 - Cada ViewModel (`TodoViewModel`, `TaskEditorViewModel`, `CategoriesViewModel`) expõe `StateFlow`s (ex.: `tasks`, `categories`, `filter` em `TodoViewModel.kt`).
 - As telas Compose coletam os fluxos com `collectAsState()` — qualquer mudança no banco recompõe a UI automaticamente.
-- **Criar/editar tarefa:** `TaskEditorViewModel.save()` grava no repositório; como a lista vem de um fluxo do próprio banco (`asFlow()` do SQLDelight, que emite a cada mudança na tabela), a lista se atualiza sozinha.
-- **Marcar como concluída:** `TodoViewModel.toggleCompleted(task)` chama `repository.setCompleted()`; o fluxo reemite e a UI risca o item.
+- **Criar/editar tarefa:** `TaskEditorViewModel.save()` grava no repositório e chama `TodoViewModel.refreshNow()`; a lista reage a duas fontes: o fluxo do próprio banco (`asFlow()` do SQLDelight) **e** um refresh determinístico (`TodoViewModel.refreshNow()`, compartilhado via companion) que cobre escritas feitas fora da instância do `TodoViewModel` (editor de tarefas, tela de categorias).
+- **Marcar como concluída:** `TodoViewModel.toggleCompleted(task)` chama `repository.setCompleted()`, incrementa `_refresh` (reemissão determinística) e o fluxo reemite — a UI risca o item na hora.
 - Filtros ficam em `MutableStateFlow<TaskFilter>` e são combinados com os fluxos do banco via `combine()`.
+- **Justificativa do refresh determinístico:** a invalidação automática do driver SQLDelight no Android se mostrou pouco confiável em testes (checkbox não atualizava); o refresh manual garante atualização sempre.
 
 Padrão reconhecível: **MVVM + unidirecional (dados → estado → UI)**, sem bibliotecas de estado externas.
 
@@ -51,7 +52,8 @@ Padrão reconhecível: **MVVM + unidirecional (dados → estado → UI)**, sem b
 
 - **Criação do banco:** `createDependencies()` — versão Android em `shared/src/androidMain/.../Dependencies.android.kt` usa `AndroidSqliteDriver(TodoDatabase.Schema, context, "todo.db")` (arquivo `todo.db` no armazenamento interno do app); versão desktop em `Dependencies.jvm.kt` usa `JdbcSqliteDriver` em `~/.todo-kmp/todo.db`.
 - **Armazenamento:** tabelas `Task` e `Category` definidas em `Todo.sq`, com FK `categoryId → Category(id) ON DELETE SET NULL` e 3 categorias iniciais (Pessoal, Trabalho, Estudos).
-- **CRUD:** todo em `TodoRepository.kt` — `insertTask`, `updateTask`, `setCompleted`, `deleteTask`, `taskById`, `tasks()` (leitura reativa), e para categorias `insertCategory`, `updateCategory`, `deleteCategory`, `countTasksInCategory`. As queries SQL nomeadas (`selectAllTasks:`, `insertTask:`, etc.) estão em `Todo.sq`.
+- **CRUD:** todo em `TodoRepository.kt` — `insertTask`, `updateTask`, `setCompleted`, `deleteTask`, `taskById`, `tasks()` (leitura reativa), e para categorias `insertCategory`, `updateCategory`, `deleteCategory`, `countTasksInCategory`. As queries SQL nomeadas (`selectAllTasks:`, `insertTask:`, `insertTaskWithId:`, etc.) estão em `Todo.sq`.
+- **Detalhe do INSERT:** `insertTask` gera o ID explicitamente (`Random.nextLong`) e grava via `insertTaskWithId` — a versão original deduzia o id lendo a última linha de um SELECT ordenado, o que retornava o id errado (tarefa mais antiga).
 
 ---
 
@@ -62,9 +64,10 @@ Rastreando a criação de uma nova tarefa:
 1. Usuário toca **+** → `App.kt` navega para `Screen.TaskEditor(null)` → `TaskEditorScreen` → `TaskEditorViewModel.load(null)`;
 2. Usuário digita título/descrição, escolhe categoria/vencimento → toca **Salvar** → `TaskEditorViewModel.save()`:
    - valida título (se vazio, marca `titleError` e não salva);
-   - chama `repository.insertTask(...)` → `Todo.sq:insertTask` → **INSERT na tabela Task do SQLite**;
+   - chama `repository.insertTask(...)` → gera id via `Random.nextLong` → `Todo.sq:insertTaskWithId` → **INSERT na tabela Task do SQLite**;
    - se `dueDateTime != null` e notificações disponíveis (`dep.notifier.isAvailable`): chama `dep.notifier.schedule(newId, título, descrição, due)` → `AndroidTodoNotifier.schedule()` registra um **alarme exato** (`setExactAndAllowWhileIdle`) com `PendingIntent` cujo `requestCode` é o **ID da tarefa**;
-3. O INSERT dispara reemissão do fluxo `selectAllTasks().asFlow()` → `TodoViewModel.tasks` (combinado com filtros) → `collectAsState()` na `TaskListScreen` → **a tarefa aparece na lista automaticamente** ao voltar.
+   - ao final da coroutine, chama `TodoViewModel.refreshNow()` (refresh determinístico);
+3. O INSERT dispara reemissão do fluxo `selectAllTasks().asFlow()` (e o `refreshNow()` força a reemissão) → `TodoViewModel.tasks` (combinado com filtros) → `collectAsState()` na `TaskListScreen` → **a tarefa aparece na lista automaticamente** ao voltar.
 
 ---
 
@@ -97,7 +100,29 @@ Decisões importantes feitas pelo agente que **não** foram especificadas no ass
 3. **Navegação manual por estado** (sealed class `Screen`) em vez de biblioteca (Jetpack Navigation / Voyager) — escopo pequeno, sem dependências extras.
 4. **DI manual** via `AppDependencies`/`AppGraph` em vez de Koin/Hilt.
 5. **MVVM com StateFlow** e fluxos reativos direto do banco (SQLDelight `asFlow`) — UI sempre sincronizada sem recarga manual.
-6. **DatePicker/TimePicker próprios** (steppers em `TaskEditorScreen.kt`) — o Compose Multiplatform 1.6 não tem date/time picker multiplataforma nativos.
+6. **DatePicker/TimePicker próprios** (steppers + dropdown de mês em `TaskEditorScreen.kt`) — o Compose Multiplatform 1.6 não tem date/time picker multiplataforma nativos.
+7. **Paleta de cores para categorias** — novas categorias recebem a primeira cor livre de uma paleta de 10 cores Material (`CATEGORY_COLORS` em `CategoriesViewModel.kt`), em vez de cor única fixa; evita que todas fiquem com o mesmo marcador.
+8. **Chips em `FlowRow`** — filtros de categoria (lista e editor) quebram linha automaticamente, permitindo acesso a todas as categorias mesmo com muitas delas.
+
+### Modelos de IA utilizados
+
+O desenvolvimento deste app foi conduzido por agentes de IA executando no servidor
+(via OpenClaude), com os seguintes modelos. Contagem de chamadas atribuída por
+diretório de trabalho nos logs JSONL das sessões — sessão de 2026-09-25 (fase KMP):
+
+| Modelo | Chamadas (todo-kmp) | Chamadas (raiz, coordenação) | Papel |
+|---|---|---|---|
+| `z-ai/glm-5.3-flash` | 158 | 91 | Modelo principal (modo fast) — implementação, builds e testes |
+| `moonshotai/kimi-k3` | 0 | 81 | Modelo alternativo — iterações de código e correções |
+| `deepseek-ai/deepseek-v4.1-flash` | 0 | 25 | Modelo alternativo — tarefas pontuais |
+| `z-ai/glm-5.3` | 0 | 0 | Não usado nesta fase |
+
+Na sessão de 2026-09-26 (que também implementou o todo-flutter), o encerramento
+do KMP consumiu adicionalmente, no diretório todo-kmp: `z-ai/glm-5.3` 268 +
+`z-ai/glm-5.3-flash` 90 + `moonshotai/kimi-k3` 51 — Entrada 09 do BUILD_LOG,
+paleta de cores, FlowRow e README. Todos os modelos operaram sobre o mesmo
+ambiente e histórico; a orquestração (sessão, ferramentas e permissões) ficou a
+cargo do OpenClaude no servidor.
 
 ---
 
@@ -105,12 +130,18 @@ Decisões importantes feitas pelo agente que **não** foram especificadas no ass
 
 Exemplos de `BUILD_LOG.md` (Entrada 01 + correções subsequentes):
 
-- **Problema:** o build falhou em sequência — caminho errado no wrapper (`APP_HOME` apontava para o diretório pai), repositórios de plugins ausentes no `settings.gradle.kts`, `android.useAndroidX=true` faltante, e vários erros de compilação Kotlin (imports, `expect fun` vs `expect class`).
+- **Problema (Entrada 01):** o build falhou em sequência — caminho errado no wrapper (`APP_HOME` apontava para o diretório pai), repositórios de plugins ausentes no `settings.gradle.kts`, `android.useAndroidX=true` faltante, e vários erros de compilação Kotlin (imports, `expect fun` vs `expect class`).
 - **Como tentou resolver:** correções incrementais a cada build, sempre registrando a iteração.
 - **Primeira solução funcionou?** Não — cada correção revelava o erro seguinte (diagnóstico em `/tmp/build*.log`).
 - **O que foi feito no fim:** `BUILD SUCCESSFUL in 28s` após ~9 iterações; APK instalado no emulador (`todo_emulator`) com `adb install`.
 
-**O que o build log ajudou a entender:** o **processo** — que o caminho até o build funcional foi iterativo e com múltiplos erros em cascata (configuração → codegen SQLDelight → imports), que decisões (SQLDelight, MVVM, navegação manual) foram tomadas com justificativa no início, e que houve obstáculos de ambiente (execuções interrompidas, `.bashrc` quebrado) contornados com o usuário. Olhando só o código final, nada disso é visível — o código final parece "ter nascido pronto", quando na verdade passou por ~9 builds e várias correções registradas.
+Outro exemplo (Entradas 07–09):
+
+- **Problema:** checkbox da lista não atualizava a UI ao marcar/desmarcar; nova categoria sempre recebia a mesma cor (`#607D8B`); chips de categoria estouravam a tela.
+- **Como tentou resolver:** refresh determinístico (`_refresh` + `TodoViewModel.refreshNow()`), paleta de cores por primeira cor livre, `Row` → `FlowRow`.
+- **Primeira solução funcionou?** Sim — validado por screenshots no emulador (Entrada 09).
+
+**O que o build log ajudou a entender:** o **processo** — que o caminho até o build funcional foi iterativo e com múltiplos erros em cascata (configuração → codegen SQLDelight → imports), que decisões (SQLDelight, MVVM, navegação manual) foram tomadas com justificativa no início, e que houve obstáculos de ambiente (execuções interrompidas, `.bashrc` quebrado) contornados com o usuário. Olhando só o código final, nada disso é visível — o código final parece "ter nascido pronto", quando na verdade passou por ~9 builds e várias correções registradas. O log também explica o **porquê** de padrões não óbvios no código final (ex.: o refresh manual `_refresh`/`refreshNow()` só faz sentido sabendo que a invalidação automática do driver falhou em teste).
 
 ---
 

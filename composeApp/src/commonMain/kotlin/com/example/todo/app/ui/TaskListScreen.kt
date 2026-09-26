@@ -51,7 +51,7 @@ import com.example.todo.shared.TaskWithCategory
 import com.example.todo.shared.TodoViewModel
 import com.example.todo.shared.db.TodoTask
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TaskListScreen(
     onEditTask: (Long?) -> Unit,
@@ -116,7 +116,7 @@ fun TaskListScreen(
 
             // Filtros: categorias
             if (categories.isNotEmpty()) {
-                Row(
+                FlowRow(
                     modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 4.dp),
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                 ) {
